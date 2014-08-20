@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="coms.itjhb.player"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="16" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 允许程序读取或写入系统设置 -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <application
+        android:allowBackup="true"
+        android:label="MyPlayer"
+        android:icon="@drawable/icon_water"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        <activity
+            android:name="com.itjhb.player.activity.MainActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MyAnimation" >
+        </activity>
+
+        <service android:name="com.itjhb.player.service.AudioService" >
+            <intent-filter>
+                <action android:name="com.itjhb.action.CTL_ACTION"/>
+            </intent-filter>
+        </service>
+        <service android:name="com.itjhb.player.service.TestService"></service>
+        
+        <receiver android:name=".MusicConfigRecevier">
+            <intent-filter >
+                <action android:name="com.itjhb.player.service.updateConfig"/>
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
