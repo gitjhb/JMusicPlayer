@@ -9,7 +9,6 @@ import java.util.Random;
 import com.itjhb.player.adapter.MusicListAdapter;
 import com.itjhb.player.domain.Music;
 import com.itjhb.player.service.AudioService;
-import com.itjhb.player.service.TestService;
 import com.itjhb.player.utils.MediaUtil;
 import com.itjhb.player.utils.Utils;
 
@@ -43,6 +42,7 @@ import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -54,6 +54,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MainActivity extends Activity implements OnClickListener {
 
 	Button btn_play, btn_pasue, btn_previous;
+	private FrameLayout record_control;
 	private Music currentMusic;
 	private IService myBinder;
 	private List<Music> musicList;
@@ -142,6 +143,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		music_progressBar = (SeekBar) findViewById(R.id.audioTrack);
 		currentProgress = (TextView) findViewById(R.id.current_progress);
 		finalProgress = (TextView) findViewById(R.id.final_progress);
+		
 	}
 
 	private void initialMusic() {

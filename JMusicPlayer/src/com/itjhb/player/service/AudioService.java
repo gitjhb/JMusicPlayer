@@ -3,6 +3,7 @@ package com.itjhb.player.service;
 import java.io.IOException;
 import java.util.List;
 
+
 import com.itjhb.player.activity.IService;
 import com.itjhb.player.activity.MainActivity;
 import com.itjhb.player.domain.Music;
@@ -21,6 +22,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
@@ -41,7 +43,7 @@ public class AudioService extends Service implements OnPreparedListener,
 	private Music currentMusic = null;
 	//the music position in the list
 	private int listPosition = 0;
-	private int play_status = 0;
+	private int play_status = 3;
 	private String path = null;
 	
 	public static final String UPDATE_ACTION = "com.itjhb.action.UPDATE_ACTION";	//更新动作
@@ -124,9 +126,9 @@ public class AudioService extends Service implements OnPreparedListener,
 		
 		myReceiver = new MyReceiver();
 	//	handler.post(mRunnable);
-//		IntentFilter filter = new IntentFilter();
-//		filter.addAction(CTL_ACTION);
-//		registerReceiver(myReceiver, filter);
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(CTL_ACTION);
+		registerReceiver(myReceiver, filter);
 	}
 
 	@Override
@@ -226,12 +228,9 @@ public class AudioService extends Service implements OnPreparedListener,
 		new Thread(){
 			public void run(){
 				while(mPlayer.isPlaying()){
-						Log.i("AudioService", "线程运行");
+//						Log.i("AudioService", "线程运行");
 						currentMills = mPlayer.getCurrentPosition(); // 获取当前音乐播放的位置
-						Intent intent = new Intent();
-						intent.setAction(MUSIC_CURRENT);
-						intent.putExtra("currentTime", currentMills);
-						sendBroadcast(intent); 
+						updateCurrentTime(); 
 						try {
 							Thread.sleep(500);
 						} catch (InterruptedException e) {
@@ -239,10 +238,18 @@ public class AudioService extends Service implements OnPreparedListener,
 							e.printStackTrace();
 						}
 				}
-			}
+
+}
 		}.start();
 	}
+	
 
+	public void updateCurrentTime() {
+	Intent intent = new Intent();
+	intent.setAction(MUSIC_CURRENT);
+	intent.putExtra("currentTime", currentMills);
+	sendBroadcast(intent);
+	}
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
@@ -280,6 +287,34 @@ public class AudioService extends Service implements OnPreparedListener,
 
 		}
 	}
+	
+	/*
+	private void setMusicStyle(int audioStyle) {
+		displayStyle = audioStyle;
+		if (mediaPlayer == null) {
+			return;
+		}
+		Equalizer equalizer = new Equalizer(0, mPlayer.getAudioSessionId());
+		equalizer.setEnabled(true);
+		// 获取音频频段
+		short bands = equalizer.getNumberOfBands();
+		// 获取均衡器上下限
+		final short minEQLevel = equalizer.getBandLevelRange()[0];
+		final short maxEQLevel = equalizer.getBandLevelRange()[1];
+		// 设置风格为
+		for (short i = 0; i < bands && i < Constants.AUDIO_STYLE_ARRAY_SIZE; i++) {
+			short value = Constants.AUDIO_STYLE_ARRAY[audioStyle][i];
+			if (value < minEQLevel) {
+				equalizer.setBandLevel(i, minEQLevel);
+			} else if (value > maxEQLevel) {
+				equalizer.setBandLevel(i, maxEQLevel);
+			} else {
+				equalizer.setBandLevel(i, value);
+			}
+		}
+	}
+	
+	*/
 
 	/**
 	 * 

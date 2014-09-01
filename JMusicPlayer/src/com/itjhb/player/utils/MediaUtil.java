@@ -139,7 +139,7 @@ public class MediaUtil {
 		if(small){	//·µ»ØÐ¡Í¼Æ¬
 			return BitmapFactory.decodeStream(context.getResources().openRawResource(R.drawable.music5), null, opts);
 		}
-		return BitmapFactory.decodeStream(context.getResources().openRawResource(R.drawable.defaultalbum), null, opts);
+		return BitmapFactory.decodeStream(context.getResources().openRawResource(R.drawable.default_album), null, opts);
 	}
 	
 	
