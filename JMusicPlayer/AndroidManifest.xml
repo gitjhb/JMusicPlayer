@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -20,12 +20,14 @@
         <activity
             android:name="com.itjhb.player.activity.MainActivity"
             android:screenOrientation="portrait" >
-            <intent-filter>
+            
+        </activity>
+        
+         <activity android:name="com.itjhb.player.activity.PlayActivity" >
+             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".MyAnimation" >
         </activity>
 
         <service android:name="com.itjhb.player.service.AudioService" >

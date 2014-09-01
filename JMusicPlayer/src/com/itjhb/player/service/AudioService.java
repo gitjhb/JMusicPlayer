@@ -34,7 +34,7 @@ import android.widget.Toast;
 public class AudioService extends Service implements OnPreparedListener,
 		OnErrorListener {
 
-	private MediaPlayer mPlayer = null;
+	private static MediaPlayer mPlayer = null;
 	private int currentMills = 0;
 	Context context;
 	private List<Music> musicList = null;
@@ -295,4 +295,11 @@ public class AudioService extends Service implements OnPreparedListener,
 	// }
 	//
 	// }
+	
+	public static boolean isPlaying() {
+		if (mPlayer != null && mPlayer.isPlaying()) {
+			return true;
+		}
+		return false;
+	}
 }

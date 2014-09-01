@@ -168,7 +168,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			isPlaying = true;
 			btn_play.setBackgroundResource(R.drawable.pause_selector);
 			finalProgress.setText(MediaUtil.formatTime(duration));
-			view.setBackgroundColor(Color.argb(0xAA, 0x00, 0x88, 0x00));
+			view.setBackgroundColor(Color.argb(0xAA, 0x33, 0x33, 0x33));
 			if(preView!=null) preView.setBackgroundColor(Color.TRANSPARENT);
 			lastClick=position;
 			preView=view;
