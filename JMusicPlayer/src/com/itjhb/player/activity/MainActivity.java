@@ -205,8 +205,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		// Intent intent = new Intent(this, AudioService.class);
 		Intent intent = new Intent(getApplicationContext(), AudioService.class);
 		Bundle bundle = new Bundle();
-		switch (v.getId()) {
-		case R.id.play_music:
+		int id = v.getId();
+		if (id == R.id.play_music) {
 			if (isPlaying) {
 				btn_play.setBackgroundResource(R.drawable.play_selector);
 				executeAction(Utils.ACTION_PAUSE);
@@ -218,33 +218,24 @@ public class MainActivity extends Activity implements OnClickListener {
 				currentMills = 0;
 				isPlaying = true;
 			}
-			break;
-
-		case R.id.previous_music:
+		} else if (id == R.id.previous_music) {
 			isPlaying = true;
 			btn_play.setBackgroundResource(R.drawable.pause_selector);
-
 			if (listPosition > 0) {
 				listPosition = listPosition - 1;
 				executeAction(Utils.ACTION_PREVIOUS);
 			} else {
 				Toast.makeText(getApplicationContext(), "前面没有了", 0).show();
 			}
-
-			break;
-
-		case R.id.next_music:
+		} else if (id == R.id.next_music) {
 			isPlaying = true;
 			btn_play.setBackgroundResource(R.drawable.pause_selector);
-
 			if (listPosition < musicList.size() - 1) {
 				listPosition = listPosition + 1;
 				executeAction(Utils.ACTION_NEXT);
 			} else {
 				Toast.makeText(getApplicationContext(), "最后一首了", 0).show();
 			}
-
-			break;
 		}
 	}
 

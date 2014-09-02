@@ -43,7 +43,7 @@ public class AudioService extends Service implements OnPreparedListener,
 	private Music currentMusic = null;
 	//the music position in the list
 	private int listPosition = 0;
-	private int play_status = 3;
+	public  static int play_status = 3;
 	private String path = null;
 	
 	public static final String UPDATE_ACTION = "com.itjhb.action.UPDATE_ACTION";	//更新动作
@@ -74,54 +74,18 @@ public class AudioService extends Service implements OnPreparedListener,
 		super.onCreate();
 		Log.i("AudioService", "服务被创建了");
 		musicList = MediaUtil.getMp3Infos(getApplicationContext());
+		play_status=3;
 		mPlayer = new MediaPlayer();
 		mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mPlayer.setOnCompletionListener(new OnCompletionListener() {
 
 			@Override
 			public void onCompletion(MediaPlayer mp) {
-				if (play_status == 1) { // 单曲循环
-					mPlayer.start();
-				} else if (play_status == 2) { // 全部循环
-					listPosition++;
-					if(listPosition > musicList.size() - 1) {	//变为第一首的位置继续播放
-						listPosition = 0;
-					}
-					Intent sendIntent = new Intent(UPDATE_ACTION);
-					sendIntent.putExtra("listPosition", listPosition);
-					// 发送广播，将被Activity组件中的BroadcastReceiver接收到
-					sendBroadcast(sendIntent);
-					path = musicList.get(listPosition).getUrl();
-					playMusic(0);
-				} else if (play_status == 3) { // 顺序播放
-					listPosition++;	//下一首位置
-					if (listPosition <= musicList.size() - 1) {
-						Intent sendIntent = new Intent(UPDATE_ACTION);
-						sendIntent.putExtra("listPosition", listPosition);
-						// 发送广播，将被Activity组件中的BroadcastReceiver接收到
-						sendBroadcast(sendIntent);
-						path = musicList.get(listPosition).getUrl();
-						playMusic(0);
-					}else {
-						mPlayer.seekTo(0);
-						listPosition = 0;
-						Intent sendIntent = new Intent(UPDATE_ACTION);
-						sendIntent.putExtra("listPosition", listPosition);
-						// 发送广播，将被Activity组件中的BroadcastReceiver接收到
-						sendBroadcast(sendIntent);
-					}
-				} else if(play_status == 4) {	//随机播放
-					
-					listPosition = (int) (Math.random() * (musicList.size() - 1));
-					System.out.println("currentIndex ->" + listPosition);
-					Intent sendIntent = new Intent(UPDATE_ACTION);
-					sendIntent.putExtra("listPosition", listPosition);
-					// 发送广播，将被Activity组件中的BroadcastReceiver接收到
-					sendBroadcast(sendIntent);
-					path = musicList.get(listPosition).getUrl();
-					playMusic(0);
-				}
+				
+				playByMode();
 			}
+
+			
 		});
 		
 		myReceiver = new MyReceiver();
@@ -162,7 +126,59 @@ public class AudioService extends Service implements OnPreparedListener,
 
 		return super.onStartCommand(intent, flags, startId);
 	}
-
+	
+	public void playByMode(){
+		play_status=Utils.getPlayMode(this);
+		Log.i("AudioService", "音乐播放结束了 mode:"+play_status);
+		if (play_status == 1) { // 单曲循环
+			Log.i("AudioService", "播放器单曲循环");
+			mPlayer.start();
+		} else if (play_status == 2) { // 全部循环
+			listPosition++;
+			if(listPosition > musicList.size() - 1) {	//变为第一首的位置继续播放
+				listPosition = 0;
+			}
+			Intent sendIntent = new Intent(UPDATE_ACTION);
+			sendIntent.putExtra("listPosition", listPosition);
+			// 发送广播，将被Activity组件中的BroadcastReceiver接收到
+			sendBroadcast(sendIntent);
+			path = musicList.get(listPosition).getUrl();
+			playMusic(0);
+		} else if (play_status == 3) { // 顺序播放
+			Log.i("AudioService", "播放器顺序播放");
+			listPosition++;	//下一首位置
+			if (listPosition <= musicList.size() - 1) {
+				
+				Intent sendIntent = new Intent(UPDATE_ACTION);
+				sendIntent.putExtra("listPosition", listPosition);
+				// 发送广播，将被Activity组件中的BroadcastReceiver接收到
+				sendBroadcast(sendIntent);
+				path = musicList.get(listPosition).getUrl();
+				playMusic(0);
+			}else {
+				mPlayer.seekTo(0);
+				listPosition = 0;
+				Intent sendIntent = new Intent(UPDATE_ACTION);
+				sendIntent.putExtra("listPosition", listPosition);
+				// 发送广播，将被Activity组件中的BroadcastReceiver接收到
+				sendBroadcast(sendIntent);
+				//实际做成重复播放了
+				path = musicList.get(listPosition).getUrl();
+				playMusic(0);
+			}
+		} else if(play_status == 4) {	//随机播放
+			Log.i("AudioService", "播放器随即播放");
+			listPosition = (int) (Math.random() * (musicList.size() - 1));
+			System.out.println("currentIndex ->" + listPosition);
+			Intent sendIntent = new Intent(UPDATE_ACTION);
+			sendIntent.putExtra("listPosition", listPosition);
+			// 发送广播，将被Activity组件中的BroadcastReceiver接收到
+			sendBroadcast(sendIntent);
+			path = musicList.get(listPosition).getUrl();
+			playMusic(0);
+		}
+	}
+	
 	private void nextMusic() {
 			playMusic(0);
 
@@ -243,7 +259,11 @@ public class AudioService extends Service implements OnPreparedListener,
 		}.start();
 	}
 	
-
+	/**
+	 * @author JHB
+	 * send broadcast to PlayActivity, current time as parameter.
+	 * 
+	 */
 	public void updateCurrentTime() {
 	Intent intent = new Intent();
 	intent.setAction(MUSIC_CURRENT);
@@ -267,21 +287,27 @@ public class AudioService extends Service implements OnPreparedListener,
 	
 	public class MyReceiver extends BroadcastReceiver {
 
+		private static final String TAG = "AudioService";
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			int control = intent.getIntExtra("control", -1);
 			switch (control) {
 			case 1:
 				play_status = 1; // 将播放状态置为1表示：单曲循环
+				Log.i(TAG, "单曲");
 				break;
 			case 2:
 				play_status = 2;	//将播放状态置为2表示：全部循环
+				Log.i(TAG, "全部");
 				break;
 			case 3:
 				play_status = 3;	//将播放状态置为3表示：顺序播放
+				Log.i(TAG, "顺序");
 				break;
 			case 4:
 				play_status = 4;	//将播放状态置为4表示：随机播放
+				Log.i(TAG, "随机");
 				break;
 			}
 

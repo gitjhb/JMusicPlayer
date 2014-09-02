@@ -1,5 +1,8 @@
 package com.itjhb.player.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -80,6 +83,16 @@ public class Utils {
 		return output;
 	}
 	
-	 
+	public static void savePlayMode(Context context, int playmode){
+		SharedPreferences sp=context.getSharedPreferences("config", Context.MODE_PRIVATE);
+		Editor myEditor=sp.edit();
+		myEditor.putInt("PlayMode", playmode);
+		myEditor.commit();
+	}
+	public static int getPlayMode(Context context){
+		SharedPreferences sp=context.getSharedPreferences("config", Context.MODE_PRIVATE);
+		return sp.getInt("PlayMode", 3);
+		
+	}
 
 }
