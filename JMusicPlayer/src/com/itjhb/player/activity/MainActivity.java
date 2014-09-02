@@ -97,7 +97,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		registerReceiver();
 		findViewById();
 
-		MusicListAdapter myAdapter = new MusicListAdapter(this, musicList);
+		MusicListAdapter myAdapter = new MusicListAdapter(this, musicList, 1000);
 		music_list.setAdapter(myAdapter);
 		music_list.setOnItemClickListener(new MyOnItemClickListener());
 

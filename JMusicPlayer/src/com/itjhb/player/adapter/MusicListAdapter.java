@@ -24,6 +24,7 @@ public class MusicListAdapter extends BaseAdapter{
 	private List<Music> mp3Infos;	//存放Mp3Info引用的集合
 	private Music music;		//Mp3Info对象引用
 	private int pos = -1;			//列表位置
+	private int height;
 	
 
 	
@@ -32,9 +33,10 @@ public class MusicListAdapter extends BaseAdapter{
 	 * @param context	上下文
 	 * @param mp3Infos  集合对象
 	 */
-	public MusicListAdapter(Context context, List<Music> mp3Infos) {
+	public MusicListAdapter(Context context, List<Music> mp3Infos, int height) {
 		this.context = context;
 		this.mp3Infos = mp3Infos;
+		this.height=height;
 	}
 
 	@Override
@@ -58,7 +60,11 @@ public class MusicListAdapter extends BaseAdapter{
 		if(convertView == null)
 		{
 			viewHolder = new ViewHolder();
-			convertView = LayoutInflater.from(context).inflate(R.layout.music_list_item_layout, null);
+			if(height>900){
+				convertView = LayoutInflater.from(context).inflate(R.layout.music_list_item_layout, null);
+			} else {
+				convertView = LayoutInflater.from(context).inflate(R.layout.small_music_list_item_layout, null);
+			}
 			viewHolder.albumImage = (ImageView) convertView.findViewById(R.id.albumImage);
 			viewHolder.musicTitle = (TextView) convertView.findViewById(R.id.music_title);
 			viewHolder.musicArtist = (TextView) convertView.findViewById(R.id.music_Artist);
@@ -71,7 +77,14 @@ public class MusicListAdapter extends BaseAdapter{
 		if(position == pos) {
 			viewHolder.albumImage.setImageResource(R.drawable.item);
 		} else {
-			Bitmap bitmap = MediaUtil.getArtwork(context, music.getId(),music.getAlbumId(), true, true);
+			Bitmap bitmap;
+			if(height>900){
+				
+				 bitmap = MediaUtil.getArtwork(context, music.getId(),music.getAlbumId(), true, false);
+			}else {
+				
+				 bitmap = MediaUtil.getArtwork(context, music.getId(),music.getAlbumId(), true, true);
+			}
 			if(bitmap == null) {
 				viewHolder.albumImage.setImageResource(R.drawable.music5);
 			} else {
