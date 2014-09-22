@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="coms.itjhb.player"
     android:versionCode="2"
-    android:versionName="1.1" >
+    android:versionName="1.11" >
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- 允许程序读取或写入系统设置 -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
 
     <application
         android:allowBackup="true"
